@@ -9,12 +9,14 @@
 
 precision mediump float;
 
+//constant values
 attribute  vec4 vPosition;
 attribute  vec4 vColor;
 
+//value that goes to fragment-shader
 varying vec4 fColor;
 
-// uniforms
+// uniforms value can be changed
 uniform vec3 theta;
 uniform vec3 translation;
 uniform vec3 scaling;
@@ -66,6 +68,7 @@ void main()
 
     fColor = vColor;
 
+    //camera position and viewport
     gl_Position =   projectionMatrix * modelViewMatrix * t * rz * ry * rx * sc * vPosition;
 }
 </script>
@@ -97,90 +100,99 @@ void main()
 
         <div class="canvas-controlls">
             <div>
-                <select name="" id="add-shape-select">
-                </select>
-                
-                <button id="add-shape-btn">Add shape</button>
-                <br /> <br />
+                <fieldset>
+                    <legend>Lab 1</legend>
+                    <select name="" id="add-shape-select">
+                    </select>
 
-                <select name="" id="active-shape-select">
-                </select>
+                    <button id="add-shape-btn">Add shape</button>
+                    <br /> <br />
 
-                <button id="active-shape-btn">Select shape</button>
-                <br /> <br />
-                <b>Active shape:</b> <span id="active-shape">None</span> <button id="remove-shape-btn">Remove from
-                    scene</button> <br /><br />
+                    <select name="" id="active-shape-select">
+                    </select>
 
-                <button id="xButton">Rotate X</button>
-                <button id="yButton">Rotate Y</button>
-                <button id="zButton">Rotate Z</button>
-                <button id="toggleRotation">Toggle Rotation</button>
+                    <button id="active-shape-btn">Select shape</button>
+                    <br /> <br />
+                    <b>Active shape:</b> <span id="active-shape">None</span> <button id="remove-shape-btn">Remove from
+                        scene</button> <br /><br />
+                </fieldset>
             </div>
             <br>
-            <!-- Translation -->
-            <div class="container">
-                <div>
+            <div>
+                <fieldset>
+                    <legend>Lab 2</legend>
+                    <!--Rotations-->
                     <div>
-                        Translate X<input id="translateX" type="range" min="-2" max="2" step="0.1" value="0" />
+                        <button id="xButton">Rotate X</button>
+                        <button id="yButton">Rotate Y</button>
+                        <button id="zButton">Rotate Z</button>
+                        <button id="toggleRotation">Toggle Rotation</button>
+                    </div>
+                    <br>
+                    <!-- Translation -->
+                    <div>
+                        <div>
+                            Translate X<input id="translateX" type="range" min="-2" max="2" step="0.1" value="0" />
 
-                    </div>
-                    <div>
-                        Translate Y<input id="translateY" type="range" min="-2" max="2" step="0.1" value="0" />
+                        </div>
+                        <div>
+                            Translate Y<input id="translateY" type="range" min="-2" max="2" step="0.1" value="0" />
 
-                    </div>
-                    <div>
-                        Translate Z<input id="translateZ" type="range" min="-2" max="2" step="0.1" value="0" />
+                        </div>
+                        <div>
+                            Translate Z<input id="translateZ" type="range" min="-2" max="2" step="0.1" value="0" />
 
+                        </div>
                     </div>
-                </div>
-
-                <!-- Scaling -->
-                <div>
+                    <br>
+                    <!-- Scaling -->
                     <div>
-                        Scale X<input id="scaleX" type="range" min="0.1" max="2" step="0.1" value="1" />
-                        0.5
+                        <div>
+                            Scale X<input id="scaleX" type="range" min="0.1" max="2" step="0.1" value="1" />
+                            0.5
+                        </div>
+                        <div>
+                            Scale Y<input id="scaleY" type="range" min="0.1" max="2" step="0.1" value="1" />
+                            0.5
+                        </div>
+                        <div>
+                            Scale Z<input id="scaleZ" type="range" min="0.1" max="2" step="0.1" value="1" />
+                            0.5
+                        </div>
                     </div>
+                    <br>
+                    <!-- Perspective -->
                     <div>
-                        Scale Y<input id="scaleY" type="range" min="0.1" max="2" step="0.1" value="1" />
-                        0.5
+                        <div>
+                            zNear .01<input id="zNearSlider" type="range" min=".01" max="3" step="0.1" value="0.3" />
+                            3
+                        </div>
+                        <div>
+                            zFar 3<input id="zFarSlider" type="range" min="3" max="10" step="3.0" value="3" />
+                            10
+                        </div>
+                        <div>
+                            radius 0.05<input id="radiusSlider" type="range" min="0.05" max="10" step="0.1" value="4" />
+                            10
+                        </div>
+                        <div>
+                            theta -90<input id="thetaSlider" type="range" min="-90" max="90" step="5" value="0" />
+                            90
+                        </div>
+                        <div>
+                            phi -90<input id="phiSlider" type="range" min="-90" max="90" step="5" value="0" />
+                            90
+                        </div>
+                        <div>
+                            fov 10<input id="fovSlider" type="range" min="10" max="120" step="5" value="45" />
+                            120
+                        </div>
+                        <div>
+                            aspect 0.5<input id="aspectSlider" type="range" min="0.5" max="2" step="0.1" value="1" />
+                            2
+                        </div>
                     </div>
-                    <div>
-                        Scale Z<input id="scaleZ" type="range" min="0.1" max="2" step="0.1" value="1" />
-                        0.5
-                    </div>
-                </div>
-
-                <!-- Perspective -->
-                <div>
-                    <div>
-                        zNear .01<input id="zNearSlider" type="range" min=".01" max="3" step="0.1" value="0.3" />
-                        3
-                    </div>
-                    <div>
-                        zFar 3<input id="zFarSlider" type="range" min="3" max="10" step="3.0" value="3" />
-                        10
-                    </div>
-                    <div>
-                        radius 0.05<input id="radiusSlider" type="range" min="0.05" max="10" step="0.1" value="4" />
-                        10
-                    </div>
-                    <div>
-                        theta -90<input id="thetaSlider" type="range" min="-90" max="90" step="5" value="0" />
-                        90
-                    </div>
-                    <div>
-                        phi -90<input id="phiSlider" type="range" min="-90" max="90" step="5" value="0" />
-                        90
-                    </div>
-                    <div>
-                        fov 10<input id="fovSlider" type="range" min="10" max="120" step="5" value="45" />
-                        120
-                    </div>
-                    <div>
-                        aspect 0.5<input id="aspectSlider" type="range" min="0.5" max="2" step="0.1" value="1" />
-                        2
-                    </div>
-                </div>
+                </fieldset>
             </div>
             <hr />
         </div>

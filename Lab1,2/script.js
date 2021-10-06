@@ -8,16 +8,24 @@ var shapes = {};
 var shapeTypes = ["Cube", "Cone", "Pyramid", "Cylinder"];
 
 // camera
+
+//minimum distance that the camera can see
 var near = "0.3";
+//maximum distance that the camera can see
 var far = 3.0;
+//how far is the camera from the center
 var radius = 4.0;
+//used to move camera left-right
 var theta  = 0.0;
+//used to move camera up-down
 var phi    = 0.0;
-var dr = 5.0 * Math.PI/180.0;
 
 var  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
 var  aspect = 1.0; // Viewport aspect ratio
 
+//model matrix creates specific coordinates for each object, not depending on the world center
+//view matrix is the first part of the camera (radius, theta, phi)
+//projection matrix is the combination of model and view matrix, it represents how we see the scene (fov, aspect, near, far)
 var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
 
@@ -50,14 +58,6 @@ class Shape {
         if (this.isRotating) {
             this.theta[this.rotAxis] += 1.0;
         }
-    }
-
-    setVertices() {
-        throw new Error("You have to implement the method setVertices()")
-    }
-
-    setColors() {
-        throw new Error("You have to implement the method setColors()")
     }
 
     draw(program) {
@@ -101,7 +101,7 @@ class Shape {
             if (select.options[i].value == this.id) 
                 select.remove(i);
         }
-
+        this.constructor.count--;
         shapes[this.id] = null;
         delete shapes[this.id];
     }
@@ -311,7 +311,6 @@ window.onload = function init() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
-    //gl.depthFunc(gl.LEQUAL);
 
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
@@ -327,7 +326,8 @@ window.onload = function init() {
         opt.innerHTML = shapeTypes[i];
         select.appendChild(opt);
     }
-    
+
+    addThreeShapes();
     // Add event listeners for buttons
     document.getElementById("add-shape-btn").onclick = function() {
         var e1 = document.getElementById("add-shape-select");
@@ -447,6 +447,20 @@ function addNewShape(shape) {
     document.getElementById("active-shape-select").appendChild(opt);
 }
 
+function addThreeShapes() {
+    var cube = new Cube();
+    cube.translation[0]-=1;
+    addNewShape(cube);
+
+    var cone = new Cone();
+    cone.translation[0]+=1;
+    addNewShape(cone);
+
+    var pyramid = new Pyramid();
+    pyramid.translation[1]+=1;
+    addNewShape(pyramid);
+}
+
 function setActiveShape(shape) {
     activeShape = shape;
     document.getElementById('active-shape').innerHTML = shape.id;
@@ -470,7 +484,7 @@ function setActiveShape(shape) {
 }
 
 function render() {
-    gl.clearColor(232/255, 232/255, 232/255, 1)
+    gl.clearColor(200/255, 200/255, 200/255, 1)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // set projection, modelView matrices
