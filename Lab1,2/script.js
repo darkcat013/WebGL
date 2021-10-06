@@ -20,7 +20,7 @@ var theta  = 0.0;
 //used to move camera up-down
 var phi    = 0.0;
 
-var  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
+var  fov = 45.0;  // Field-of-view in degrees
 var  aspect = 1.0; // Viewport aspect ratio
 
 //model matrix creates specific coordinates for each object, not depending on the world center
@@ -183,7 +183,7 @@ class Cone extends Shape {
 
             baseVertices.push(currVertex);
         }
-
+        //connect first and last triangle from the base
         baseVertices.push(baseVertices[0]);
         
         for (let i=0; i < baseVertices.length - 1; i++) {
@@ -311,7 +311,7 @@ window.onload = function init() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
-
+    //gl.depthFunc(gl.LEQUAL);
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
@@ -430,7 +430,7 @@ window.onload = function init() {
         aspect = event.target.value;
     };
     document.getElementById("fovSlider").onchange = function(event) {
-        fovy = event.target.value;
+        fov = event.target.value;
     };
 
     render();
@@ -492,7 +492,7 @@ function render() {
     radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
 
     modelViewMatrix = lookAt(eye, at , up);
-    projectionMatrix = perspective(fovy, aspect, near, far);
+    projectionMatrix = perspective(fov, aspect, near, far);
 
     gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
