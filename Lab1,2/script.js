@@ -484,7 +484,7 @@ function setActiveShape(shape) {
 }
 
 function render() {
-    gl.clearColor(200/255, 200/255, 200/255, 1)
+    gl.clearColor(28/255, 17/255, 80/255, 1)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // set projection, modelView matrices
