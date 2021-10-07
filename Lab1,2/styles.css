@@ -50,8 +50,7 @@ fieldset {
 }
 
 input[type=range] {
-    /* margin-left: 5px; */
-    width: 70%;
+     width: 70%;
     -webkit-appearance: none;
     border-radius: 10px;
   }
@@ -64,7 +63,7 @@ input[type=range] {
     background-color: lavender;
     border: 1;
     width: 100%;
-    height: 7px;
+    height: 9px;
     cursor: pointer;
     border-radius: 6px;
   }
@@ -72,13 +71,13 @@ input[type=range] {
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance:none;
     margin-bottom: 2px;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     background-color: rgba(92, 77, 161, 0.808);
     border: 1px solid white;
     border-radius: 6px;
     cursor: pointer;
-    margin-top: -1.5px; 
+    margin-top: -1.3px; 
   }
 
   .lab2 * {
