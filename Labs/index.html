@@ -25,6 +25,19 @@ uniform vec3 scaling;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
+//light stuff
+attribute  vec3 vNormal;
+
+varying vec3 fNormal;
+varying vec3 fPos;
+
+uniform vec3 ambientColor;
+uniform vec3 diffuseColor[3];
+uniform vec3 specularColor[3];
+
+uniform vec3 lightPos[3];
+uniform vec3 viewPos;
+
 void main()
 {
     // Compute the sines and cosines of theta for each of
@@ -68,6 +81,8 @@ void main()
 
 
     fColor = vColor;
+    fNormal = vec3(t * rz * ry * rx * sc * vec4(vNormal, 1));
+    fPos =  vec3(t * rz * ry * rx * sc *  vPosition);
 
     //camera position and viewport
     gl_Position =   projectionMatrix * modelViewMatrix * t * rz * ry * rx * sc * vPosition;
@@ -75,14 +90,52 @@ void main()
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-//all the light and coloring stuff goes shere
+//all the light and coloring stuff goes here
 precision mediump float;
 
 varying vec4 fColor;
 
+//light stuff
+uniform vec3 ambientColor;
+uniform vec3 diffuseColor[3];
+uniform vec3 specularColor[3];
+
+uniform vec3 lightPos[3];
+uniform vec3 viewPos;
+
+varying vec3 fNormal;
+varying vec3 fPos;
+
 void main()
 {    
-    gl_FragColor = fColor;
+    vec3 result = ambientColor;
+
+    for (int i=0; i<3; i++) {
+        vec3 currDiffuseColor = diffuseColor[i];
+        vec3 currSpecularColor = specularColor[i];
+        vec3 currLightPos = lightPos[i];
+
+        // diffuse lighting
+        vec3 norm = normalize(fNormal);
+        vec3 lightDir = normalize(currLightPos - fPos);
+    
+        // calculate the diffuse impact of the light on the current fragment
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = vec3(diff, diff, diff) * currDiffuseColor; //light color
+    
+        // specular lighting
+        vec3 viewDir = normalize(viewPos - fPos);
+        vec3 reflectDir = reflect(-lightDir, norm);
+    
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
+        vec3 specular = 4.0 * spec * currSpecularColor; //light color
+
+        result +=  diffuse + specular;
+    }
+
+    vec4 lightColor = vec4(result * vec3(fColor), 1);
+
+    gl_FragColor = lightColor;
 }
 </script>
 
