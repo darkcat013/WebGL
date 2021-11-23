@@ -100,7 +100,7 @@ void main()
         <br />
 
         <div class="canvas-controlls">
-            <div class = "lab1">
+            <div class="lab1">
                 <fieldset>
                     <legend>Lab 1</legend>
                     <select name="" id="add-shape-select">
@@ -197,6 +197,61 @@ void main()
             <div class="lab3">
                 <fieldset>
                     <legend>Lab 3</legend>
+                    <div>
+                        <select name="" id="active-light-select">
+                        </select>
+
+                        <button id="active-light-btn">Select Light Source</button>
+                        <br /> <br />
+                        <b>Active Light Source:</b> <span id="active-light">LightSource1</span>
+                        <br /> <br />
+                        <div class="container">
+                            <div>
+                                Translate active light source
+                                <div>
+                                    Translate X<input id="translateX-light" type="range" min="-1.5" max="1.5" step="0.1"
+                                        value="-0.75" />
+                                </div>
+                                <div>
+                                    Translate Y<input id="translateY-light" type="range" min="-1.5" max="1.5" step="0.1"
+                                        value="0.75" />
+
+                                </div>
+                                <div>
+                                    Translate Z<input id="translateZ-light" type="range" min="-2" max="2" step="0.1"
+                                        value="0.5" />
+
+                                </div>
+                            </div>
+                            <div>
+                                Diffuse Color
+                                <div> Pick: 
+                                    <input id="diffuse-color" type="color" value="#FFFFFF" />
+                                </div>
+                                </br>
+                            </div>
+                            <div>
+                                Specular Color
+                                <div> Pick: 
+                                    <input id="specular-color" type="color" value="#FFFFFF" />
+                                </div>
+                            </div>
+
+                            <div>
+                                Ambient Color
+                                <div> Pick: 
+                                    <input id="ambient-color" type="color" value="#000000" />
+                                </div>
+                            </div>
+                            <div>
+                                Shininess
+                                <div>
+                                    <input id="shininess" type="range" min="-1.5" max="1.5" step="0.1"
+                                        value="-0.75" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
             </div>
             <div class="lab4">

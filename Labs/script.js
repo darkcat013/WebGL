@@ -5,7 +5,7 @@ var gl;
 var program;
 
 var shapes = {};
-var shapeTypes = ["Cube", "Cone", "Pyramid", "Cylinder"];
+var shapeTypes = ["Cube", "Cone", "Pyramid", "Cylinder","Sphere"];
 
 // camera
 
@@ -311,7 +311,7 @@ window.onload = function init() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
-    //gl.depthFunc(gl.LEQUAL);
+    gl.depthFunc(gl.LEQUAL);
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
@@ -346,6 +346,8 @@ window.onload = function init() {
                 break;
             case "Cylinder":
                 shape = new Cylinder();
+                break;
+            case "Sphere":
                 break;
             default:
                 console.log("Shape not identified");
