@@ -146,7 +146,7 @@ void main()
 
 <body>
     <div class="container">
-        <canvas id="gl-canvas" width="800" height="800">
+        <canvas id="gl-canvas" width="900" height="900">
             Oops ... your browser doesn't support the HTML5 canvas element
         </canvas>
 
@@ -278,29 +278,28 @@ void main()
                             </div>
                             <div>
                                 Diffuse Color
-                                <div> Pick: 
+                                <div> Pick:
                                     <input id="diffuse-color" type="color" value="#FFFFFF" />
                                 </div>
                                 </br>
                             </div>
                             <div>
                                 Specular Color
-                                <div> Pick: 
+                                <div> Pick:
                                     <input id="specular-color" type="color" value="#FFFFFF" />
                                 </div>
                             </div>
 
                             <div>
                                 Ambient Color
-                                <div> Pick: 
+                                <div> Pick:
                                     <input id="ambient-color" type="color" value="#000000" />
                                 </div>
                             </div>
                             <div>
                                 Shininess
                                 <div>
-                                    <input id="shininess" type="range" min="-1.5" max="1.5" step="0.1"
-                                        value="-0.75" />
+                                    <input id="shininess" type="range" min="-1.5" max="1.5" step="0.1" value="-0.75" />
                                 </div>
                             </div>
                         </div>
@@ -310,6 +309,21 @@ void main()
             <div class="lab4">
                 <fieldset>
                     <legend>Lab 4</legend>
+                    <div>
+                        <label for="file-input">Upload obj</label>
+                        <input type="file" id="file-input" />
+                        <br><br>
+
+                        Add texture on object:
+                        <select name="" id="active-object-select">
+                        </select>
+
+                        <button id="active-object-btn">Select</button>
+                        <br /> <br />
+
+                        <label>Load texture</label>
+                        <input texture-number="0" type="file" class="file-loader" id="file-loader" />
+                    </div>
                 </fieldset>
             </div>
         </div>

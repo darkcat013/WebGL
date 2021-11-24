@@ -41,9 +41,9 @@ var lights = {};
 var ambientColorLoc, diffuseColorLoc, specularColorLoc;
 var lightPosLoc;
 var viewPosLoc;
-var ambientColor = [0.25, 0.25, 0.25];
-var diffuseColor = [1, 0.25, 0.5];
-var specularColor = [1, 0.25, 0.5];
+var ambientColor = [0, 0, 0];
+var diffuseColor = [1, 1, 1];
+var specularColor = [1, 1, 1];
 
 var activeLight;
 
@@ -51,7 +51,7 @@ function getRandomColor() {
     return vec4(Math.random(), Math.random(), Math.random(), 1.0)
 }
 
-function subArrays(a, b) {
+function subtractArray(a, b) {
     let c = []
 
     for (let i = 0; i < a.length; i++) {
@@ -62,18 +62,18 @@ function subArrays(a, b) {
 }
 
 function hexToRGB(hex) {
-    var R = hex.slice(1, 3);
-    var G = hex.slice(3, 5);
-    var B = hex.slice(5, 7);
+    let R = hex.slice(1, 3);
+    let G = hex.slice(3, 5);
+    let B = hex.slice(5, 7);
     return vec3(parseInt(R, 16) / 255, parseInt(G, 16) / 255, parseInt(B, 16) / 255);
 }
 
 function intToHex(integer) {
-    var str = parseInt(integer*255).toString(16);
+    let str = parseInt(integer*255).toString(16);
     return str.length == 1 ? "0" + str : str;
 };
 
-function to_rgb(r, g, b) { return "#" + intToHex(r) + intToHex(g) + intToHex(b); }
+function intRGB_ToHex(r, g, b) { return "#" + intToHex(r) + intToHex(g) + intToHex(b); }
 
 class Shape {
     constructor() {
@@ -98,25 +98,25 @@ class Shape {
 
     draw(program) {
         // vertex array attribute buffer
-        var vBuffer = gl.createBuffer();
+        let vBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, flatten(this.points), gl.STATIC_DRAW);
 
-        var vPosition = gl.getAttribLocation(program, "vPosition");
+        let vPosition = gl.getAttribLocation(program, "vPosition");
         gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vPosition);
 
         // normal buffer
-        var nBuffer = gl.createBuffer();
+        let nBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, flatten(this.normals), gl.STATIC_DRAW);
 
-        var vNormal = gl.getAttribLocation(program, "vNormal")
+        let vNormal = gl.getAttribLocation(program, "vNormal")
         gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vNormal);
 
         // color buffer
-        var cBuffer = gl.createBuffer();
+        let cBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, flatten(this.colors), gl.STATIC_DRAW);
 
@@ -125,9 +125,9 @@ class Shape {
         gl.enableVertexAttribArray(cPosition);
 
         // uniforms
-        var thetaLoc = gl.getUniformLocation(program, "theta");
-        var transLoc = gl.getUniformLocation(program, "translation");
-        var scaleLoc = gl.getUniformLocation(program, "scaling");
+        let thetaLoc = gl.getUniformLocation(program, "theta");
+        let transLoc = gl.getUniformLocation(program, "translation");
+        let scaleLoc = gl.getUniformLocation(program, "scaling");
 
 
         this.update();
@@ -140,8 +140,8 @@ class Shape {
 
     remove() {
         // remove shape from active shape select options on page
-        var select = document.getElementById("active-shape-select");
-        for (var i = 0; i < select.length; i++) {
+        let select = document.getElementById("active-shape-select");
+        for (let i = 0; i < select.length; i++) {
             if (select.options[i].value == this.id)
                 select.remove(i);
         }
@@ -175,8 +175,8 @@ class Cube extends Shape {
         ];
 
         const quad = (a, b, c, d, normals) => {
-            var indices = [a, b, c, a, c, d];
-            var color = getRandomColor();
+            let indices = [a, b, c, a, c, d];
+            let color = getRandomColor();
             for (let i = 0; i < indices.length - 3; ++i) {
                 this.points.push(vertices[indices[i]]);
                 this.colors.push(color);
@@ -257,17 +257,17 @@ class Cone extends Shape {
             this.colors.push(color);
             this.colors.push(color);
 
-            var p1 = vec3(baseVertices[i]);
-            var p2 = vec3(baseVertices[i + 1]);
-            var p3 = vec3(apex);
+            let p1 = vec3(baseVertices[i]);
+            let p2 = vec3(baseVertices[i + 1]);
+            let p3 = vec3(apex);
 
-            var v = subArrays(p2, p1);
-            var w = subArrays(p3, p1);
+            let v = subtractArray(p2, p1);
+            let w = subtractArray(p3, p1);
 
-            var nx = v[1] * w[2] - v[2] * w[1];
-            var ny = v[2] * w[0] - v[0] * w[2];
-            var nz = v[0] * w[1] - v[1] - w[0];
-
+            let nx = v[1] * w[2] - v[2] * w[1];
+            let ny = v[2] * w[0] - v[0] * w[2];
+            let nz = v[0] * w[1] - v[1] * w[0];
+            console.log({p1: p1, p2:p2, p3:p3, v:v, w:w, nx:nx, ny:ny, nz:nz})
             this.normals.push([nx, ny, nz])
             this.normals.push([nx, ny, nz])
             this.normals.push([nx, ny, nz])
@@ -361,17 +361,17 @@ class Cylinder extends Shape {
             this.points.push(bottomVertices[i + 1]);
             this.points.push(topVertices[i]);
 
-            var p1 = vec3(bottomVertices[i]);
-            var p2 = vec3(bottomVertices[i + 1]);
-            var p3 = vec3(topVertices[i]);
+            let p1 = vec3(bottomVertices[i]);
+            let p2 = vec3(bottomVertices[i + 1]);
+            let p3 = vec3(topVertices[i]);
 
-            var v = subArrays(p2, p1);
-            var w = subArrays(p3, p1);
-            console.log(v, p2, p1)
+            let v = subtractArray(p2, p1);
+            let w = subtractArray(p3, p1);
+            
 
-            var nx = v[1] * w[2] - v[2] * w[1];
-            var ny = v[2] * w[0] - v[0] * w[2];
-            var nz = v[0] * w[1] - v[1] - w[0];
+            let nx = v[1] * w[2] - v[2] * w[1];
+            let ny = v[2] * w[0] - v[0] * w[2];
+            let nz = v[0] * w[1] - v[1] * w[0];
 
             this.normals.push([nx, ny, nz])
             this.normals.push([nx, ny, nz])
@@ -386,18 +386,6 @@ class Cylinder extends Shape {
             this.points.push(topVertices[i])
             this.points.push(topVertices[i + 1]);
             this.points.push(bottomVertices[i + 1]);
-
-            var p1 = vec3(topVertices[i]);
-            var p2 = vec3(topVertices[i + 1]);
-            var p3 = vec3(bottomVertices[i + 1]);
-
-            var v = subArrays(p2, p1);
-            var w = subArrays(p3, p1);
-            console.log(v, p2, p1)
-
-            var nx = v[1] * w[2] - v[2] * w[1];
-            var ny = v[2] * w[0] - v[0] * w[2];
-            var nz = v[0] * w[1] - v[1] - w[0];
 
             this.normals.push([nx, ny, nz])
             this.normals.push([nx, ny, nz])
@@ -426,8 +414,8 @@ class Sphere extends Shape {
         let stackStep = Math.PI / stackCount;
         let lengthInv = 1.0 / radius;
 
-        var vertices = [];
-        var normals = [];
+        let vertices = [];
+        let normals = [];
         for (let i = 0; i <= stackCount; i++) {
             let stackAngle = Math.PI / 2 - i * stackStep;
             let xy = radius * Math.cos(stackAngle);
@@ -449,11 +437,11 @@ class Sphere extends Shape {
             }
         }
 
-        for (var i = 0; i < stackCount; i++) {
-            var k1 = i * (sectorCount + 1);
-            var k2 = k1 + sectorCount + 1;
+        for (let i = 0; i < stackCount; i++) {
+            let k1 = i * (sectorCount + 1);
+            let k2 = k1 + sectorCount + 1;
 
-            for (var j = 0; j < sectorCount; j++, k1++, k2++) {
+            for (let j = 0; j < sectorCount; j++, k1++, k2++) {
                 if (i != 0) {
                     this.points.push(vertices[k1]);
                     this.points.push(vertices[k2]);
@@ -533,8 +521,8 @@ window.onload = function init() {
 
     // Add select options for available shapes
     for (let i = 0; i < shapeTypes.length; i++) {
-        var select = document.getElementById("add-shape-select");
-        var opt = document.createElement('option');
+        let select = document.getElementById("add-shape-select");
+        let opt = document.createElement('option');
         opt.value = shapeTypes[i];
         opt.innerHTML = shapeTypes[i];
         select.appendChild(opt);
@@ -543,10 +531,10 @@ window.onload = function init() {
     //addThreeShapes();
     // Add event listeners for buttons
     document.getElementById("add-shape-btn").onclick = function () {
-        var e1 = document.getElementById("add-shape-select");
-        var shapeType = e1.options[e1.selectedIndex].value;
+        let e1 = document.getElementById("add-shape-select");
+        let shapeType = e1.options[e1.selectedIndex].value;
 
-        var shape;
+        let shape;
         switch (shapeType) {
             case "Cone":
                 shape = new Cone();
@@ -571,8 +559,8 @@ window.onload = function init() {
     }
 
     document.getElementById("active-shape-btn").onclick = function () {
-        var e = document.getElementById("active-shape-select");
-        var activeShapeName = e.options[e.selectedIndex].value;
+        let e = document.getElementById("active-shape-select");
+        let activeShapeName = e.options[e.selectedIndex].value;
 
         setActiveShape(shapes[activeShapeName]);
     }
@@ -670,8 +658,8 @@ window.onload = function init() {
     }
 
     document.getElementById("active-light-btn").onclick = function () {
-        var e = document.getElementById("active-light-select");
-        var activeShapeName = e.options[e.selectedIndex].value;
+        let e = document.getElementById("active-light-select");
+        let activeShapeName = e.options[e.selectedIndex].value;
 
         setActiveLight(lights[activeShapeName]);
     }
@@ -699,22 +687,22 @@ function addNewShape(shape) {
     setActiveShape(shape);
 
     // add select option of the new shape
-    var opt = document.createElement('option');
+    let opt = document.createElement('option');
     opt.value = shape.id;
     opt.innerHTML = shape.id;
     document.getElementById("active-shape-select").appendChild(opt);
 }
 
 function addThreeShapes() {
-    var cube = new Cube();
+    let cube = new Cube();
     cube.translation[0] -= 1;
     addNewShape(cube);
 
-    var cone = new Cone();
+    let cone = new Cone();
     cone.translation[0] += 1;
     addNewShape(cone);
 
-    var pyramid = new Pyramid();
+    let pyramid = new Pyramid();
     pyramid.translation[1] += 1;
     addNewShape(pyramid);
 }
@@ -724,13 +712,13 @@ function setActiveShape(shape) {
     document.getElementById('active-shape').innerHTML = shape.id;
 
     // change shape slider values
-    var translateX = document.getElementById("translateX");
-    var translateY = document.getElementById("translateY");
-    var translateZ = document.getElementById("translateZ");
+    let translateX = document.getElementById("translateX");
+    let translateY = document.getElementById("translateY");
+    let translateZ = document.getElementById("translateZ");
 
-    var scaleX = document.getElementById("scaleX");
-    var scaleY = document.getElementById("scaleY");
-    var scaleZ = document.getElementById("scaleZ");
+    let scaleX = document.getElementById("scaleX");
+    let scaleY = document.getElementById("scaleY");
+    let scaleZ = document.getElementById("scaleZ");
 
     translateX.value = activeShape.translation[0]
     translateY.value = activeShape.translation[1]
@@ -742,14 +730,14 @@ function setActiveShape(shape) {
 }
 
 function addLightSource(pos, color) {
-    var light = new LightSource(color, color)
+    let light = new LightSource(color, color)
     light.translation = pos;
 
     lights[light.id] = light
 
     // add selection option for the current light source
-    var activeLightSelect = document.getElementById("active-light-select")
-    var opt = document.createElement('option');
+    let activeLightSelect = document.getElementById("active-light-select")
+    let opt = document.createElement('option');
     opt.value = light.id;
     opt.innerHTML = light.id;
     activeLightSelect.appendChild(opt)
@@ -761,23 +749,23 @@ function setActiveLight(lightSource) {
     document.getElementById('active-light').innerHTML = activeLight.id;
 
     // change shape slider values
-    var translateX = document.getElementById("translateX-light");
-    var translateY = document.getElementById("translateY-light");
-    var translateZ = document.getElementById("translateZ-light");
+    let translateX = document.getElementById("translateX-light");
+    let translateY = document.getElementById("translateY-light");
+    let translateZ = document.getElementById("translateZ-light");
 
     // change shape slider values
-    var diffColorPicker = document.getElementById("diffuse-color");
+    let diffColorPicker = document.getElementById("diffuse-color");
 
     // change shape slider values
-    var specColorPicker = document.getElementById("specular-color");
+    let specColorPicker = document.getElementById("specular-color");
 
     translateX.value = activeLight.translation[0]
     translateY.value = activeLight.translation[1]
     translateZ.value = activeLight.translation[2]
 
-    diffColorPicker.value = to_rgb(activeLight.diffuseColor[0], activeLight.diffuseColor[1], activeLight.diffuseColor[2]);
+    diffColorPicker.value = intRGB_ToHex(activeLight.diffuseColor[0], activeLight.diffuseColor[1], activeLight.diffuseColor[2]);
 
-    specColorPicker.value =  to_rgb(activeLight.specularColor[0], activeLight.specularColor[1], activeLight.specularColor[2]);
+    specColorPicker.value =  intRGB_ToHex(activeLight.specularColor[0], activeLight.specularColor[1], activeLight.specularColor[2]);
 }
 
 function render() {
@@ -785,9 +773,9 @@ function render() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // get diffuse/specular light colors of each light source
-    var diffuseColor = [];
-    var specularColor = [];
-    var lightPos = [];
+    let diffuseColor = [];
+    let specularColor = [];
+    let lightPos = [];
 
     for (let lightId in lights) {
         let currLight = lights[lightId]
