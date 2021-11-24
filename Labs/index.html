@@ -34,10 +34,17 @@ varying vec3 fPos;
 uniform vec3 ambientColor;
 uniform vec3 diffuseColor[3];
 uniform vec3 specularColor[3];
+uniform float shininess[3];
 
 uniform vec3 lightPos[3];
 uniform vec3 viewPos;
 
+//texture stuff
+// texture
+attribute vec2 vTextureCoord; // texture coords were passed here from JS
+varying vec2 fTextureCoord; // texture coords that will be passed to fragment shader
+
+uniform float hasTexture;
 void main()
 {
     // Compute the sines and cosines of theta for each of
@@ -84,6 +91,8 @@ void main()
     fNormal = vec3(t * rz * ry * rx * sc * vec4(vNormal, 1));
     fPos =  vec3(t * rz * ry * rx * sc *  vPosition);
 
+    fTextureCoord = vTextureCoord; // passing the texture coords right to the fragment shader
+
     //camera position and viewport
     gl_Position =   projectionMatrix * modelViewMatrix * t * rz * ry * rx * sc * vPosition;
 }
@@ -99,12 +108,18 @@ varying vec4 fColor;
 uniform vec3 ambientColor;
 uniform vec3 diffuseColor[3];
 uniform vec3 specularColor[3];
+uniform float shininess[3];
 
 uniform vec3 lightPos[3];
 uniform vec3 viewPos;
 
 varying vec3 fNormal;
 varying vec3 fPos;
+
+// Texture
+uniform sampler2D textureData; // current texture number, passed from JS
+uniform float hasTexture;
+varying vec2 fTextureCoord;
 
 void main()
 {    
@@ -118,16 +133,14 @@ void main()
         // diffuse lighting
         vec3 norm = normalize(fNormal);
         vec3 lightDir = normalize(currLightPos - fPos);
-    
+        float distance = length(currLightPos - fPos);
         // calculate the diffuse impact of the light on the current fragment
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = vec3(diff, diff, diff) * currDiffuseColor; //light color
+        float diff = max(dot(norm, lightDir), 0.0)/distance;
+        vec3 diffuse = diff * currDiffuseColor; //light color
     
         // specular lighting
-        vec3 viewDir = normalize(viewPos - fPos);
-        vec3 reflectDir = reflect(-lightDir, norm);
     
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
+        float spec = pow(diff, shininess[i]);
         vec3 specular = 4.0 * spec * currSpecularColor; //light color
 
         result +=  diffuse + specular;
@@ -135,7 +148,12 @@ void main()
 
     vec4 lightColor = vec4(result * vec3(fColor), 1);
 
-    gl_FragColor = lightColor;
+    if (hasTexture > 0.5) {
+        vec4 colorFromTexture = texture2D(textureData, fTextureCoord); // getting the color for the pixel based on texture coordinates
+        gl_FragColor = 0.7*colorFromTexture + 0.3*lightColor;
+    } else {
+        gl_FragColor = lightColor;
+    }
 }
 </script>
 
@@ -299,7 +317,7 @@ void main()
                             <div>
                                 Shininess
                                 <div>
-                                    <input id="shininess" type="range" min="-1.5" max="1.5" step="0.1" value="-0.75" />
+                                    <input id="shininess" type="range" min="0.1" max="10" step="0.1" value="1.0" />
                                 </div>
                             </div>
                         </div>
@@ -318,16 +336,25 @@ void main()
                         <select name="" id="active-object-select">
                         </select>
 
-                        <button id="active-object-btn">Select</button>
+                        <button id="active-object-btn">Select</button> Current: <span id="current-object">None</span>
                         <br /> <br />
 
                         <label>Load texture</label>
-                        <input texture-number="0" type="file" class="file-loader" id="file-loader" />
+                        <input texture-number="0" type="file" class="file-loader" id="file-loader" accept="image/*"/>
                     </div>
                 </fieldset>
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="helper-functions.js"></script>
+    <script type="text/javascript" src="Shape.js"></script>
+    <script type="text/javascript" src="Cube.js"></script>
+    <script type="text/javascript" src="Cone.js"></script>
+    <script type="text/javascript" src="Pyramid.js"></script>
+    <script type="text/javascript" src="Cylinder.js"></script>
+    <script type="text/javascript" src="Sphere.js"></script>
+    <script type="text/javascript" src="LightSource.js"></script>
+    <script type="text/javascript" src="ObjShape.js"></script>
     <script type="text/javascript" src="script.js"></script>
 </body>
 
