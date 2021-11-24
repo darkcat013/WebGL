@@ -107,7 +107,7 @@ input[type=range] {
   #diffuse-color {
     
     background-color:transparent;
-    border:none
+    border:none;
   }
 
   #specular-color {
