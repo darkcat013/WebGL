@@ -104,3 +104,17 @@ input[type=range] {
     
   }
 
+  #diffuse-color {
+    
+    background-color:transparent;
+    border:none
+  }
+
+  #specular-color {
+    background-color:transparent;
+    border: none;
+  }
+  #ambient-color {
+    background-color:transparent;
+    border: none;
+  }
